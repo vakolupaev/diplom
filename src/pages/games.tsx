@@ -50,7 +50,7 @@ function GamesPage() {
     useEffect(() => {
         document.addEventListener('keydown', domHandler);
 
-        return removeEventListener('keydown', domHandler);
+        return () => {document.removeEventListener('keydown', domHandler)};
     }, [])
 
     const handleButtonClick = (index: number) => {
