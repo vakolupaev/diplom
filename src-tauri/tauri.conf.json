@@ -25,7 +25,7 @@
   "bundle": {
     "iOS": {
       "minimumSystemVersion": "13.0",
-      "developmentTeam": "Golikov Artemiy (Personal Team)"
+      "developmentTeam": "Hikky Name (Personal Team)"
     },
     "active": true,
     "targets": "all",
