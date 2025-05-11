@@ -23,6 +23,10 @@
     }
   },
   "bundle": {
+    "iOS": {
+      "minimumSystemVersion": "13.0",
+      "developmentTeam": "Golikov Artemiy (Personal Team)"
+    },
     "active": true,
     "targets": "all",
     "icon": [
