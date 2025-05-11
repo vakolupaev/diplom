@@ -1,0 +1,31 @@
+[
+    {
+        "label": "1",
+        "objects": [
+            {
+                "correct": true,
+                "img": "botinki.png"
+            },
+            {
+                "correct": true,
+                "img": "bransboit.png"
+            },
+            {
+                "correct": true,
+                "img": "ognetushitel.png"
+            },
+            {
+                "correct": true,
+                "img": "maska.png"
+            },
+            {
+                "correct": false,
+                "img": "dubinka.png"
+            },
+            {
+                "correct": false,
+                "img": "shprits.png"
+            }
+        ]
+    }
+]

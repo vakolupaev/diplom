@@ -1,0 +1,120 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+button {
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background: "none";
+    background-color: #00000000;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    font-family: "Montserrat", sans-serif;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f1f1f1;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    max-height: 100vh;
+}
+
+.enter-button {
+    border: none;
+    outline: none;
+    box-shadow: 0px 2px 10px -5px #00000090;
+    background-color: #adff2f;
+    padding: 20px;
+    border-radius: 10px;
+    transition: 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.enter-button:hover {
+    background-color: #90e010;
+}
+
+.enter-button-disabled {
+    cursor: default;
+    pointer-events: none;
+    background-color: #939393;
+}
+
+.test-button {
+    border: none;
+    outline: none;
+    box-shadow: 0px 2px 10px -5px #00000090;
+    padding: 20px;
+    border-radius: 10px;
+    transition: 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.test-button:hover {
+    opacity: 60%;
+}
+
+.header {
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+}
+
+.header div {
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+    gap: 20px
+}
+
+.header-button {
+    /* margin: 20px; */
+    height: 50px;
+    width: 200px;
+    border-radius: 15px;
+    font-size: large;
+    background-color: #adff2f;
+    box-shadow: 0px 2px 10px -5px #00000090;
+    transition: 0.15s ease-in-out;
+}
+
+.header-button:hover {
+    background-color: #90e010;
+}
+
+main {
+    width: 100%;
+    height: 100%;
+}
+
+.game-element {
+    width: 200px;
+    height: 200px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
