@@ -12,10 +12,11 @@
   "app": {
     "windows": [
       {
-        "title": "diplom-rs",
+        "title": "Программа по автоматизации работы педагога",
         "width": 800,
         "height": 600,
-        "minWidth": 1200
+        "minWidth": 1200,
+        "minHeight": 1100
       }
     ],
     "security": {
@@ -23,10 +24,6 @@
     }
   },
   "bundle": {
-    "iOS": {
-      "minimumSystemVersion": "13.0",
-      "developmentTeam": "Hikky Name (Personal Team)"
-    },
     "active": true,
     "targets": "all",
     "icon": [

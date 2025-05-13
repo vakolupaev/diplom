@@ -118,3 +118,7 @@ main {
     justify-content: center;
     align-items: center;
 }
+
+.header-font {
+    font-size: large;
+}

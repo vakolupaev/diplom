@@ -23,16 +23,23 @@ function Header() {
                 }}
             >
                 <button
+                    className="header-font"
                     onClick={() => setPage("main")}
                 >
                     Главная
                 </button>
                 <button
+                    className="header-font"
                     onClick={() => setPage("students")}
                 >
                     Воспитанники
                 </button>
-                <button>Варианты игр</button>
+                <button
+                    className="header-font"
+                    onClick={() => setPage("gamesvariant")}
+                >
+                    Варианты игр
+                </button>
             </div>
         </div>
     )

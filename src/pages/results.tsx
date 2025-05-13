@@ -1,8 +1,28 @@
 import Header from "../components/header.component";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../providers";
 import users from "../users.json";
-import { AxisOptions, Chart } from "react-charts";
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend,
+  Title,
+} from 'chart.js';
+
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend,
+  Title
+);
 
 function ResultsPage() {
     const {user, setUser} = useContext(UserContext);
@@ -20,54 +40,44 @@ function ResultsPage() {
     }, [])
 
 
-    type Rates = {
-        date: number,
-        rate: number,
-    }
-    
-    type Series = {
-        label: string,
-        color: string,
-        data: Rates[]
-    }
-    
-    const data: Series[] = [
-    {
-        label: user,
-        color: "#ffffff",
-        data: [
-        {
-            date: 1,
-            rate: 1,
-        },
-        {
-            date: 2,
-            rate: 2,
-        },
-        {
-            date: 3,
-            rate: 3,
-        }
-        ]
-    }
-    ]
 
-   const primaryAxis = useMemo(
-     (): AxisOptions<Rates> => ({
-       getValue: datum => datum.date,
-     }),
-     []
-   )
- 
-   const secondaryAxes = useMemo(
-     (): AxisOptions<Rates>[] => [
-       {
-            getValue: datum => datum.rate,
-            stacked: true,
-       },
-     ],
-     []
-   )
+
+    const data = {
+    labels: ["15.01.2025", "15.02.2025", "15.03.2025", "15.04.2025", "13.05.2025"],
+    datasets: [
+      {
+        label: 'Уровень вербального мышления',
+        data: [3, 2, 2, 1, 0],
+        fill: false,
+        borderColor: '#90e010',
+        tension: 0.2,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    scales: {
+      y: {
+        reverse: true, // инвертируем ось Y
+        ticks: {
+          stepSize: 1,
+          callback: function (value) {
+            return `${value} уровень`;
+          },
+        },
+        min: 1,
+        max: 5,
+      },
+      x: {
+        title: {
+          display: true,
+          text: '',
+        },
+      },
+    },
+  };
+
 
     return (
         <>
@@ -140,6 +150,9 @@ function ResultsPage() {
                                     boxShadow: "0px 2px 10px -5px #00000090"
                                 }}
                             >
+                                <div style={{cursor: "pointer"}} onClick={() => {setUser("Все дети"); setUserList(users.filter((usr) => usr.name.toLocaleLowerCase().includes("Все дети"))); }}>
+                                    Все дети
+                                </div>
                                 {
                                     userList.map((userrr: any, index: number) => {
                                         return (
@@ -162,21 +175,14 @@ function ResultsPage() {
                                     boxSizing:"border-box",
                                 }}
                             >
-                                Создать
+                                Сохранить в Excel
                             </button>
                         </div>
                     </div>
                 </div>
                 <div style={{position: "relative", width: "70%", height: "60%", marginBottom: "100px", zIndex: 1}}>
-                        <Chart
-                            options={{
-                                data,
-                                primaryAxis,
-                                secondaryAxes,
-                                defaultColors: ["#90e010"]
-                            }}
-                        />
-                    </div>
+                    <Line data={data} options={options} />
+                </div>
             </main>
         </>
     )

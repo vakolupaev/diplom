@@ -6,6 +6,7 @@ import GamesPage from "./pages/games";
 import MainPage from "./pages/main";
 import EnterTestPage from "./pages/test/enterTest";
 import StudentsPage from "./pages/students";
+import GamesVariantPage from "./pages/games-variant";
 
 function Router() {
     const {page} = useContext(PageContext);
@@ -21,6 +22,8 @@ function Router() {
             return <ResultsPage/>;
         case "students":
             return <StudentsPage/>;
+        case "gamesvariant":
+            return <GamesVariantPage/>;
         default:
             return <MainPage/>;
     }  
