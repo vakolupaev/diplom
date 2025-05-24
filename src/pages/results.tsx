@@ -1,7 +1,6 @@
 import Header from "../components/header.component";
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../providers";
-import users from "../users.json";
+import { UserContext, UsersListContext } from "../providers";
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -25,18 +24,27 @@ ChartJS.register(
 );
 
 function ResultsPage() {
+    const {usersList} = useContext(UsersListContext);
     const {user, setUser} = useContext(UserContext);
-    const [userList, setUserList] = useState<any>(users);
+    const [userList, setUserList] = useState<any>(usersList);
+
+    const [focused, setFocused] = useState(false)
+    const onFocus = () => setFocused(true)
+    const onBlur = () => {
+        setTimeout(() => {
+            setFocused(false)
+        }, 500);
+    }
     
 
     function InputHandler(e: any) {
         const inp = e.target.value.toLowerCase();
         setUser(e.target.value);
-        setUserList(users.filter((usr) => usr.name === e.target.value).length == 1 ? [] : users.filter((usr) => usr.name.toLocaleLowerCase().includes(inp)));
+        setUserList(usersList.filter((usr: any) => usr.name === e.target.value).length == 1 ? [] : usersList.filter((usr: any) => usr.name.toLocaleLowerCase().includes(inp)));
     }
 
     useEffect(() => {
-        setUserList(users.filter((usr) => usr.name === user).length == 1 ? [] : users.filter((usr) => usr.name.toLocaleLowerCase().includes(user.toLowerCase())));
+        setUserList(usersList.filter((usr: any) => usr.name === user).length == 1 ? [] : usersList.filter((usr: any) => usr.name.toLocaleLowerCase().includes(user.toLowerCase())));
     }, [])
 
 
@@ -62,7 +70,7 @@ function ResultsPage() {
         reverse: true, // инвертируем ось Y
         ticks: {
           stepSize: 1,
-          callback: function (value) {
+          callback: function (value: any) {
             return `${value} уровень`;
           },
         },
@@ -117,7 +125,6 @@ function ResultsPage() {
                         >
                             Воспитанник:
                             <input
-                                autoFocus
                                 type="text"
                                 value={user}
                                 style={{
@@ -130,39 +137,44 @@ function ResultsPage() {
                                     border: "none",
                                     boxShadow: "0px 2px 10px -5px #00000090"
                                 }}
+                                onFocus={onFocus}
+                                onBlur={onBlur}
                                 onChange={InputHandler}
                             />
                             {
-                                userList.length >= 1 && <div 
-                                style={{
-                                    zIndex: 10,
-                                    overflowY: "scroll",
-                                    maxHeight: "300px",
-                                    top: "110px",
-                                    width: "300px",
-                                    background: "#ffffff",
-                                    borderRadius: "12px",
-                                    padding: "20px",
-                                    display: "flex",
-                                    position: "absolute",
-                                    flexDirection: "column",
-                                    gap: "15px",
-                                    boxShadow: "0px 2px 10px -5px #00000090"
-                                }}
-                            >
-                                <div style={{cursor: "pointer"}} onClick={() => {setUser("Все дети"); setUserList(users.filter((usr) => usr.name.toLocaleLowerCase().includes("Все дети"))); }}>
-                                    Все дети
+                                userList.length >= 1 && focused ? 
+                                <div 
+                                    style={{
+                                        zIndex: 10,
+                                        overflowY: "scroll",
+                                        maxHeight: "300px",
+                                        top: "110px",
+                                        width: "300px",
+                                        background: "#ffffff",
+                                        borderRadius: "12px",
+                                        padding: "20px",
+                                        display: "flex",
+                                        position: "absolute",
+                                        flexDirection: "column",
+                                        gap: "15px",
+                                        boxShadow: "0px 2px 10px -5px #00000090"
+                                    }}
+                                >
+                                    <div style={{cursor: "pointer"}} onClick={() => {setUser("Все дети, за период"); setUserList(usersList.filter((usr: any) => usr.name.toLocaleLowerCase().includes("Все дети, за период"))); }}>
+                                        Все дети, за период
+                                    </div>
+                                    {
+                                        userList.map((userrr: any, index: number) => {
+                                            return (
+                                                <div key={index} style={{cursor: "pointer"}} onClick={() => {setUser(userrr.name); setUserList(usersList.filter((usr: any) => usr.name.toLocaleLowerCase().includes(userrr.name))); }}>
+                                                    {userrr.name}
+                                                </div>
+                                            )
+                                        })
+                                    }
                                 </div>
-                                {
-                                    userList.map((userrr: any, index: number) => {
-                                        return (
-                                            <div key={index} style={{cursor: "pointer"}} onClick={() => {setUser(userrr.name); setUserList(users.filter((usr) => usr.name.toLocaleLowerCase().includes(userrr.name))); }}>
-                                                {userrr.name}
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </div>
+                                :
+                                null
                             }
                             Динамика уровня мышления:
                             <button

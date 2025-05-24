@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import testData from "../../test.json";
-import { PageContext, TestContext, UserContext } from "../../providers";
+import { PageContext, TestContext, TestUserContext } from "../../providers";
 import TestButton from "../../components/testbutton.component";
 
 function TestPage() {
     const {setPage} = useContext(PageContext);
-    const {setUser} = useContext(UserContext);
     const {questions, setQuestions} = useContext(TestContext);
+    const {setTestUser} = useContext(TestUserContext);
 
     function ButtonHandler(index: number) {
         setQuestions((prev: any) => {
@@ -77,10 +77,8 @@ function TestPage() {
                     }}
                     onClick={() => {
                         setQuestions([...testData]);
-                        setUser("");
-                        setTimeout(() => {
-                            setPage("home");
-                        }, 0.05)
+                        setTestUser("");
+                        setPage("home");
                     }}
                 >
                     Завершить

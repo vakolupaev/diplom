@@ -1,22 +1,22 @@
 import { useContext, useEffect, useState } from "react";
 import Header from "../../components/header.component";
-import users from "../../users.json";
-import { PageContext, UserContext } from "../../providers";
+import { PageContext, TestUserContext, UsersListContext } from "../../providers";
 
 function EnterTestPage() {
+    const {usersList} = useContext(UsersListContext);
     const {setPage} = useContext(PageContext);
-    const {user, setUser} = useContext(UserContext);
-    const [userList, setUserList] = useState(users);
+    const {testUser, setTestUser} = useContext(TestUserContext);
+    const [userList, setUserList] = useState(usersList);
     
 
     function InputHandler(e: any) {
         const inp = e.target.value.toLowerCase();
-        setUser(e.target.value);
-        setUserList(users.filter((usr) => usr.name === e.target.value).length == 1 ? [] : users.filter((usr) => usr.name.toLocaleLowerCase().includes(inp)));
+        setTestUser(e.target.value);
+        setUserList(usersList.filter((usr: any) => usr.name === e.target.value).length == 1 ? [] : usersList.filter((usr: any) => usr.name.toLocaleLowerCase().includes(inp)));
     }
 
     useEffect(() => {
-        setUserList(users.filter((usr) => usr.name === user).length == 1 ? [] : users.filter((usr) => usr.name.toLocaleLowerCase().includes(user.toLowerCase())));
+        setUserList(usersList.filter((usr: any) => usr.name === testUser).length == 1 ? [] : usersList.filter((usr: any) => usr.name.toLocaleLowerCase().includes(testUser.toLowerCase())));
     }, [])
 
     return (
@@ -35,7 +35,7 @@ function EnterTestPage() {
                         <input
                             autoFocus
                             type="text"
-                            value={user}
+                            value={testUser}
                             style={{
                                 width: "300px",
                                 padding: "20px",
@@ -47,40 +47,43 @@ function EnterTestPage() {
                             onChange={InputHandler}
                         />
                         {
-                            userList.length >= 1 && <div 
-                            style={{
-                                overflowY: "scroll",
-                                maxHeight: "300px",
-                                top: "70px",
-                                width: "300px",
-                                background: "#ffffff",
-                                borderRadius: "12px",
-                                padding: "20px",
-                                display: "flex",
-                                position: "absolute",
-                                flexDirection: "column",
-                                gap: "15px",
-                                boxShadow: "0px 2px 10px -5px #00000090"
-                            }}
-                        >
-                            {
-                                userList.map((userrr, index) => {
-                                    return (
-                                        <div key={index} style={{cursor: "pointer"}} onClick={() => {setUser(userrr.name); setUserList(users.filter((usr) => usr.name.toLocaleLowerCase().includes(userrr.name))); }}>
-                                            {userrr.name}
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
+                            userList.length >= 1 
+                            && 
+                            
+                            <div 
+                                style={{
+                                    overflowY: "scroll",
+                                    maxHeight: "300px",
+                                    top: "70px",
+                                    width: "300px",
+                                    background: "#ffffff",
+                                    borderRadius: "12px",
+                                    padding: "20px",
+                                    display: "flex",
+                                    position: "absolute",
+                                    flexDirection: "column",
+                                    gap: "15px",
+                                    boxShadow: "0px 2px 10px -5px #00000090"
+                                }}
+                            >
+                                {
+                                    userList.map((userrr: any, index: number) => {
+                                        return (
+                                            <div key={index} style={{cursor: "pointer"}} onClick={() => {setTestUser(userrr.name); setUserList(usersList.filter((usr: any) => usr.name.toLocaleLowerCase().includes(userrr.name))); }}>
+                                                {userrr.name}
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
                         }
                         
                     </div>
                     <button
                         className={`enter-button ${
-                            users.filter((usr) => usr.name === user).length == 1
+                            usersList.filter((usr: any) => usr.name === testUser).length == 1
                             && 
-                            user === users.filter((usr) => usr.name === user)[0].name ? "" : "enter-button-disabled"}`}
+                            testUser === usersList.filter((usr: any) => usr.name === testUser)[0].name ? "" : "enter-button-disabled"}`}
                         onClick={() => {
                             setPage("test")
                         }}

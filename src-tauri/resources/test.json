@@ -1,0 +1,37 @@
+[
+        {
+            "id": 1,
+            "label": "Какое из животных больше - лошадь или собака?",
+            "variations": 2,
+            "selected": "gray",
+            "rates": [0, -5]
+        },
+        {
+            "id": 2,
+            "label": "Утром люди завтракают. А вечером?",
+            "variations": 2,
+            "selected": "gray",
+            "rates": [0, -3]
+        },
+        {
+            "id": 3,
+            "label": "Днем на улице светло, а ночью?",
+            "variations": 2,
+            "selected": "gray",
+            "rates": [0, -4]
+        },
+        {
+            "id": 4,
+            "label": "Небо голубое, а трава?",
+            "variations": 2,
+            "selected": "gray",
+            "rates": [0, -4]
+        },
+        {
+            "id": 5,
+            "label": "Яблоки, груши, сливы, персики – это что?",
+            "variations": 3,
+            "selected": "gray",
+            "rates": [1, 0, -1]
+        }
+    ]

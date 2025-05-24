@@ -1,27 +1,33 @@
 import { useContext, useEffect, useState } from "react";
 import Header from "../components/header.component";
-import users from "../users.json";
-import { UserContext } from "../providers";
+import { UserContext, UsersListContext } from "../providers";
+import { setUsers } from "../features/users";
 
 function StudentsPage() {
+    const {usersList, setUsersList} = useContext(UsersListContext);
+    const [userList, setUserList] = useState(usersList);
     const {user, setUser} = useContext(UserContext);
-    const [userList, setUserList] = useState(users);
     const [change, setChange] = useState(false);
     const [create, setCreate] = useState(false);
     const [createUser, setCreateUser] = useState("");
+    const [changeUser, setChangeUser] = useState("");
 
     useEffect(() => {
-        setUserList(users.filter((usr) => usr.name.toLocaleLowerCase().includes(user.toLowerCase())));
+        setUserList(usersList.filter((usr: any) => usr.name.toLocaleLowerCase().includes(user.toLowerCase())));
+    }, [usersList])
+
+    useEffect(() => {
+        setUserList(usersList.filter((usr: any) => usr.name.toLocaleLowerCase().includes(user.toLowerCase())));
     }, [])
 
     function InputHandler(e: any) {
         const inp = e.target.value.toLowerCase();
         setUser(e.target.value);
-        setUserList(users.filter((usr) => usr.name.toLocaleLowerCase().includes(inp)));
+        setUserList(usersList.filter((usr: any) => usr.name.toLocaleLowerCase().includes(inp)));
     }
 
     function SelectUserHandler(index: number) {
-        let d = userList.map((user) => {
+        let d = userList.map((user: any) => {
             return {
                 ...user,
                 selected: false
@@ -31,6 +37,30 @@ function StudentsPage() {
         d[index] = {...d[index], selected: true};
         setUser(d[index].name);
         setUserList(d);
+    }
+
+    function CreateUserHandler() {
+        let arr = [...usersList, {name: createUser}].sort((a, b) => a.name.localeCompare(b.name))
+        setUsers(arr);
+        setUsersList(arr);
+        setCreate(false);
+    }
+
+    function ChangeUserHandler() {
+        let u = usersList.filter((us: any) => us.name != user);
+
+        let arr = [...u, {name: changeUser}].sort((a: any, b: any) => a.name.localeCompare(b.name))
+        setUsers(arr);
+        setUsersList(arr);
+        setChange(false);
+    }
+
+    function DeleteUserHandler() {
+        let u = usersList.filter((us: any) => us.name != user).sort((a: any, b: any) => a.name.localeCompare(b.name));
+
+        setUsers([...u]);
+        setUsersList([...u]);
+        setUser("");
     }
 
     return (
@@ -84,7 +114,7 @@ function StudentsPage() {
                         Hello
                     </div>
                     {
-                        userList.map((user: any, index) => {
+                        userList.map((user: any, index: number) => {
                             return (
                                 <div
                                     key={index}
@@ -148,6 +178,7 @@ function StudentsPage() {
                             boxShadow: "0px 2px 10px -5px #00000090",
                             width: "200px"
                         }}
+                        onClick={DeleteUserHandler}
                     >
                         Удалить
                     </button>
@@ -182,7 +213,7 @@ function StudentsPage() {
                             />
                             <button
                                 className="enter-button"
-                                onClick={() => {setCreate(false)}}
+                                onClick={CreateUserHandler}
                             >
                                 Добавить
                             </button>
@@ -195,7 +226,7 @@ function StudentsPage() {
                             <input
                                 autoFocus
                                 type="text"
-                                value={user}
+                                value={changeUser}
                                 style={{
                                     width: "400px",
                                     padding: "20px",
@@ -207,11 +238,11 @@ function StudentsPage() {
                                     boxShadow: "0px 2px 10px -5px #00000090",
                                     zIndex: 10
                                 }}
-                                onChange={(e) => {setUser(e.target.value)}}
+                                onChange={(e) => {setChangeUser(e.target.value)}}
                             />
                             <button
                                 className="enter-button"
-                                onClick={() => {setChange(false)}}
+                                onClick={ChangeUserHandler}
                             >
                                 Сохранить
                             </button>

@@ -1,6 +1,14 @@
+import { useEffect, useState } from "react";
 import Header from "../components/header.component";
+import { getPath } from "../features/users";
 
 function MainPage() {
+    const [path, setPath] = useState("")
+
+    useEffect(() => {
+        getPath().then((path: any) => setPath(path));
+    })
+
     return (
         <>
             <Header/>
@@ -23,6 +31,7 @@ function MainPage() {
                 >
                     <img src="main.jpg" alt="" style={{width: 897, height: 213}}/>
                 </div>
+                {path}
             </div>
         </>
     )
