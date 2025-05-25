@@ -1,6 +1,10 @@
+import { useContext } from "react";
 import Header from "../components/header.component";
+import { create_excel } from "../features/excel";
+import { UsersListContext } from "../providers";
 
 function MainPage() {
+    const {usersList} = useContext(UsersListContext);
 
     return (
         <>

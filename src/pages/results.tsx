@@ -12,6 +12,7 @@ import {
   Legend,
   Title,
 } from 'chart.js';
+import { create_excel } from "../features/excel";
 
 ChartJS.register(
   LineElement,
@@ -24,9 +25,91 @@ ChartJS.register(
 );
 
 function ResultsPage() {
+    const d = new Date();
+    const [dateStart, setDateStart] = useState("1980-01-01");
+    const [dateEnd, setDateEnd] = useState(`${d.getFullYear()}-${(d.getMonth() + 1).toString().length < 2 ? `0${d.getMonth() + 1}` : d.getMonth() + 1}-${d.getDate().toString().length < 2 ? `0${d.getDate()}` : d.getDate()}`);
     const {usersList} = useContext(UsersListContext);
     const {user, setUser} = useContext(UserContext);
     const [userList, setUserList] = useState<any>(usersList);
+    const [data, setData] = useState({
+        labels: [],
+        datasets: [
+        {
+            label: 'Уровень вербального мышления',
+            data: [],
+            fill: false,
+            borderColor: '#90e010',
+            tension: 0.2,
+        },
+        ],
+    });
+
+    useEffect(() => {
+        let usr = usersList.find((el) => el.name == user);
+
+        if (!!usr) {
+            const c = {
+                labels: usr.results.filter((item: any) => {
+
+                        let date: string = item.date
+                        let dateSplit: string[] = date.split(".");
+                        let dateNormalize = `${dateSplit[2]}-${dateSplit[1]}-${dateSplit[0]}`
+                        return dateNormalize >= dateStart && dateNormalize <= dateEnd
+
+
+                    }).map((el) => el.date),
+                datasets: [{
+                    ...data.datasets[0],
+
+                    data: usr.results.filter((item: any) => {
+
+                        let date: string = item.date
+                        let dateSplit: string[] = date.split(".");
+                        let dateNormalize = `${dateSplit[2]}-${dateSplit[1]}-${dateSplit[0]}`
+                        return dateNormalize >= dateStart && dateNormalize <= dateEnd
+
+
+                    }).map((el) => {
+                        let r = el.results.map((elem) => {
+                            return elem.res;
+                        })
+                        const sum = r.reduce((partialSum, a) => partialSum + a, 0)
+
+                        if (sum <= -11) {
+                            return 5
+                        }
+                        if (sum <= -1 && sum >= -10) {
+                            return 4
+                        }
+                        if (sum <= 13 && sum >= 0) {
+                            return 3
+                        }
+                        if (sum <= 23 && sum >= 14) {
+                            return 2
+                        }
+                        if (sum >= 24) {
+                            return 1
+                        }
+                    })
+            }]}
+
+            setData(c);
+        } else {
+            setData({
+        labels: [],
+        datasets: [
+        {
+            label: 'Уровень вербального мышления',
+            data: [],
+            fill: false,
+            borderColor: '#90e010',
+            tension: 0.2,
+        },
+        ],
+    })
+        }
+    
+    }, [user, dateEnd, dateStart])
 
     const [focused, setFocused] = useState(false)
     const onFocus = () => setFocused(true)
@@ -35,6 +118,7 @@ function ResultsPage() {
             setFocused(false)
         }, 500);
     }
+
     
 
     function InputHandler(e: any) {
@@ -47,21 +131,42 @@ function ResultsPage() {
         setUserList(usersList.filter((usr: any) => usr.name === user).length == 1 ? [] : usersList.filter((usr: any) => usr.name.toLocaleLowerCase().includes(user.toLowerCase())));
     }, [])
 
+    function SaveHandler() {
+        if (user === "Все дети, за период") {
+            let d = usersList.map((userL) => {
+                return {
+                    ...userL,
+                    results: userL.results.filter((item: any) => {
+
+                        let date: string = item.date
+                        let dateSplit: string[] = date.split(".");
+                        let dateNormalize = `${dateSplit[2]}-${dateSplit[1]}-${dateSplit[0]}`
+                        return dateNormalize >= dateStart && dateNormalize <= dateEnd
 
 
+                    })
+                }
+            }).filter(el => el.results.length > 0);
+            create_excel(JSON.stringify(d))
+        } else {
+            let usr = usersList.find(el => el.name == user);
+            if (!!usr) {
+                let ud = {
+                        ...usr,
+                        results: usr.results.filter((item: any) => {
 
-    const data = {
-    labels: ["15.01.2025", "15.02.2025", "15.03.2025", "15.04.2025", "13.05.2025"],
-    datasets: [
-      {
-        label: 'Уровень вербального мышления',
-        data: [3, 2, 2, 1, 0],
-        fill: false,
-        borderColor: '#90e010',
-        tension: 0.2,
-      },
-    ],
-  };
+                        let date: string = item.date
+                        let dateSplit: string[] = date.split(".");
+                        let dateNormalize = `${dateSplit[2]}-${dateSplit[1]}-${dateSplit[0]}`
+                        return dateNormalize >= dateStart && dateNormalize <= dateEnd
+
+
+                    })};
+                create_excel(JSON.stringify([ud]))
+            }
+        }
+    }
+    
 
   const options = {
     responsive: true,
@@ -115,9 +220,9 @@ function ResultsPage() {
                             }}
                         >
                             Дата начала:
-                            <input style={{padding: "20px", boxSizing:"border-box", height: "60px", border: "none", borderRadius: "12px", boxShadow: "0px 2px 10px -5px #00000090"}} type="date" />
+                            <input value={dateStart} onInput={(e) => setDateStart(e.target.value)} style={{padding: "20px", boxSizing:"border-box", height: "60px", border: "none", borderRadius: "12px", boxShadow: "0px 2px 10px -5px #00000090"}} type="date" />
                             Дата конца:
-                            <input style={{padding: "20px", boxSizing:"border-box", height: "60px", border: "none", borderRadius: "12px", boxShadow: "0px 2px 10px -5px #00000090"}} type="date" />
+                            <input value={dateEnd} onInput={(e) => setDateEnd(e.target.value)} style={{padding: "20px", boxSizing:"border-box", height: "60px", border: "none", borderRadius: "12px", boxShadow: "0px 2px 10px -5px #00000090"}} type="date" />
                         </div>
 
                         <div
@@ -186,6 +291,7 @@ function ResultsPage() {
                                     height: "60px",
                                     boxSizing:"border-box",
                                 }}
+                                onClick={SaveHandler}
                             >
                                 Сохранить в Excel
                             </button>

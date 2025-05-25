@@ -1,10 +1,10 @@
 fn main() {
 
-    windows_app_manifest(); 
-    // tauri_build::build();
+    // _windows_app_manifest(); 
+    tauri_build::build();
 }
 
-fn windows_app_manifest()
+fn _windows_app_manifest()
 {
   let mut windows = tauri_build::WindowsAttributes::new();
   let manifest = include_str!("diplom-rs.exe.xml"); 

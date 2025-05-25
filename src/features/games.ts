@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 
 export async function getGamePicture(path: string): Promise<any> {
-    let data: any = await invoke('get_game_picture', {gameObject: path});
+    let data: any = await invoke('get_game_picture', {game_object: path});
     let arr = new Uint8Array(data);
     var blob = new Blob( [ arr ] );
     var imageUrl = URL.createObjectURL(blob);

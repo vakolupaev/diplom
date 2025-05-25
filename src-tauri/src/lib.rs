@@ -14,7 +14,8 @@ pub fn run() {
             commands::get_users,
             commands::set_users,
             commands::get_path,
-            commands::get_game_picture
+            commands::get_game_picture,
+            commands::create_excel
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

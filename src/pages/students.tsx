@@ -43,16 +43,18 @@ function StudentsPage() {
     }
 
     function CreateUserHandler() {
-        let arr = [...usersList, {name: createUser}]
+        let arr = [...usersList, {name: createUser,results:[]}]
         setUsers(arr).then(e => setErr(e));
         setUsersList(arr);
         setCreate(false);
     }
 
     function ChangeUserHandler() {
+        let cu = usersList.find((el) => el.name == user);
+        console.log(cu)
         let u = usersList.filter((us: any) => us.name != user);
 
-        let arr = [...u, {name: changeUser}].sort((a: any, b: any) => a.name.localeCompare(b.name))
+        let arr = [...u, {...cu, name: changeUser}].sort((a: any, b: any) => a.name.localeCompare(b.name))
         setUsers(arr);
         setUsersList(arr);
         setChange(false);
