@@ -50,7 +50,7 @@ function StudentsPage() {
     }
 
     function ChangeUserHandler() {
-        let cu = usersList.find((el) => el.name == user);
+        let cu = usersList.find((el: any) => el.name == user);
         console.log(cu)
         let u = usersList.filter((us: any) => us.name != user);
 

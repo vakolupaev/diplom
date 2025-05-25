@@ -1,7 +1,7 @@
 fn main() {
 
-    // _windows_app_manifest(); 
-    tauri_build::build();
+    _windows_app_manifest(); 
+    // tauri_build::build();
 }
 
 fn _windows_app_manifest()

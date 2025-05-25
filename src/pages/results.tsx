@@ -45,7 +45,7 @@ function ResultsPage() {
     });
 
     useEffect(() => {
-        let usr = usersList.find((el) => el.name == user);
+        let usr = usersList.find((el: any) => el.name == user);
 
         if (!!usr) {
             const c = {
@@ -57,7 +57,7 @@ function ResultsPage() {
                         return dateNormalize >= dateStart && dateNormalize <= dateEnd
 
 
-                    }).map((el) => el.date),
+                    }).map((el: any) => el.date),
                 datasets: [{
                     ...data.datasets[0],
 
@@ -69,11 +69,11 @@ function ResultsPage() {
                         return dateNormalize >= dateStart && dateNormalize <= dateEnd
 
 
-                    }).map((el) => {
-                        let r = el.results.map((elem) => {
+                    }).map((el: any) => {
+                        let r = el.results.map((elem: any) => {
                             return elem.res;
                         })
-                        const sum = r.reduce((partialSum, a) => partialSum + a, 0)
+                        const sum = r.reduce((partialSum: any, a: any) => partialSum + a, 0)
 
                         if (sum <= -11) {
                             return 5
@@ -133,7 +133,7 @@ function ResultsPage() {
 
     function SaveHandler() {
         if (user === "Все дети, за период") {
-            let d = usersList.map((userL) => {
+            let d = usersList.map((userL: any) => {
                 return {
                     ...userL,
                     results: userL.results.filter((item: any) => {
@@ -146,10 +146,10 @@ function ResultsPage() {
 
                     })
                 }
-            }).filter(el => el.results.length > 0);
+            }).filter((el: any) => el.results.length > 0);
             create_excel(JSON.stringify(d))
         } else {
-            let usr = usersList.find(el => el.name == user);
+            let usr = usersList.find((el: any) => el.name == user);
             if (!!usr) {
                 let ud = {
                         ...usr,
@@ -220,9 +220,9 @@ function ResultsPage() {
                             }}
                         >
                             Дата начала:
-                            <input value={dateStart} onInput={(e) => setDateStart(e.target.value)} style={{padding: "20px", boxSizing:"border-box", height: "60px", border: "none", borderRadius: "12px", boxShadow: "0px 2px 10px -5px #00000090"}} type="date" />
+                            <input value={dateStart} onInput={(e: any) => setDateStart(e.target.value)} style={{padding: "20px", boxSizing:"border-box", height: "60px", border: "none", borderRadius: "12px", boxShadow: "0px 2px 10px -5px #00000090"}} type="date" />
                             Дата конца:
-                            <input value={dateEnd} onInput={(e) => setDateEnd(e.target.value)} style={{padding: "20px", boxSizing:"border-box", height: "60px", border: "none", borderRadius: "12px", boxShadow: "0px 2px 10px -5px #00000090"}} type="date" />
+                            <input value={dateEnd} onInput={(e: any) => setDateEnd(e.target.value)} style={{padding: "20px", boxSizing:"border-box", height: "60px", border: "none", borderRadius: "12px", boxShadow: "0px 2px 10px -5px #00000090"}} type="date" />
                         </div>
 
                         <div
