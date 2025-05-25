@@ -1,9 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import Header from "../components/header.component";
-import { UserContext, UsersListContext } from "../providers";
+import { ErrContext, UserContext, UsersListContext } from "../providers";
 import { setUsers } from "../features/users";
 
 function StudentsPage() {
+    const {setErr} = useContext(ErrContext);
+
+
     const {usersList, setUsersList} = useContext(UsersListContext);
     const [userList, setUserList] = useState(usersList);
     const {user, setUser} = useContext(UserContext);
@@ -40,8 +43,8 @@ function StudentsPage() {
     }
 
     function CreateUserHandler() {
-        let arr = [...usersList, {name: createUser}].sort((a, b) => a.name.localeCompare(b.name))
-        setUsers(arr);
+        let arr = [...usersList, {name: createUser}]
+        setUsers(arr).then(e => setErr(e));
         setUsersList(arr);
         setCreate(false);
     }

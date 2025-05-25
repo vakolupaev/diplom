@@ -5,6 +5,7 @@ import galochka from "../assets/galochka.png";
 import krest from "../assets/krest.png";
 import games from "../games.json";
 import { PageContext } from "../providers";
+import { getGamePicture } from "../features/games";
 
 function shuffle(array: any) {
   let currentIndex = array.length;
@@ -26,9 +27,38 @@ function GamesPage() {
     const [timeo, setTimeo] = useState(false);
     const [next, setNext] = useState(false);
 
-    useEffect(() => {
+    const [pictureSet, setPicSet] = useState({
+        background: "",
+        images: []
+    })
+
+    const getPics = async () => {
         let arr = shuffle(games[0].objects);
         setObjectList(arr);
+        let imgs =  arr.map((obj: any) => {
+            return obj.img
+        })
+        let background = await getGamePicture(`games\\${games[0].name}\\фон.jpg`);
+
+        let rarr: any = await Promise.all([
+            getGamePicture(`games\\${games[0].name}\\${imgs[0]}`),
+            getGamePicture(`games\\${games[0].name}\\${imgs[1]}`),
+            getGamePicture(`games\\${games[0].name}\\${imgs[2]}`),
+            getGamePicture(`games\\${games[0].name}\\${imgs[3]}`),
+            getGamePicture(`games\\${games[0].name}\\${imgs[4]}`),
+            getGamePicture(`games\\${games[0].name}\\${imgs[5]}`)
+        ])
+
+        setPicSet({
+            background: background,
+            images: rarr
+        })
+        
+    }
+
+    useEffect(() => {
+        
+        getPics()
     }, [])
 
     useEffect(() => {
@@ -84,7 +114,7 @@ function GamesPage() {
                 overflow: "hidden"
             }}
         >
-            <img src="фон.jpg" style={{position: "absolute", width: "100vw", height: "100vh", zIndex: 1}} alt="" />
+            <img src={pictureSet.background} style={{position: "absolute", width: "100vw", height: "100vh", zIndex: 1}} alt="" />
             {
                 next && 
                 <button
@@ -130,7 +160,7 @@ function GamesPage() {
                                     onClick={() => {object.disabled ? null : handleButtonClick(index)}}
                                 >
                                     {
-                                        !object.disabled && <img src={object.img} style={{width: "100%", height: "100%", objectFit: "contain"}} alt="" />
+                                        !object.disabled && <img src={pictureSet.images[index]} style={{width: "100%", height: "100%", objectFit: "contain"}} alt="" />
                                     }
                                     {
                                         object.selected && 

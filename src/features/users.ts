@@ -6,7 +6,9 @@ export async function getUsers(): Promise<any> {
 }
 
 export function setUsers(users: any) {
-    invoke('set_users', {users: JSON.stringify(users.sort((a: any, b: any) => a.name.localeCompare(b.name)))});
+    return invoke('set_users', {
+        users: JSON.stringify(users)
+    });
 }
 
 export function getPath() {
