@@ -1,8 +1,8 @@
 use std::io::{Read, Write};
 use rust_xlsxwriter::*;
 use serde::Deserialize;
-use serde_json::{json, Value};
-use tauri::{ipc::Response, path::BaseDirectory, Manager};
+use serde_json::{Value};
+use tauri::{ipc::{InvokeError, Response}, path::BaseDirectory, Error, Manager};
 
 #[tauri::command]
 pub fn get_users(handle: tauri::AppHandle) -> String {
@@ -97,19 +97,8 @@ pub fn create_excel(app: tauri::AppHandle, data: String) -> Result<(), String>{
     let d: Vec<USER> = serde_json::from_value(d).unwrap();
     println!("{:?}", d);
 
-    // Create some formats to use in the worksheet.
-    let bold_format = Format::new().set_bold();
-    let decimal_format = Format::new().set_num_format("0.000");
-    let date_format = Format::new().set_num_format("dd-mm-yyyy");
-    let merge_format = Format::new()
-        .set_border(FormatBorder::Thin)
-        .set_align(FormatAlign::Center);
-
-    
-    // Add a worksheet to the workbook.
     let worksheet = workbook.add_worksheet();
 
-    // Set the column width for clarity.
     worksheet.set_column_width(0, 30).expect("msg");
     worksheet.set_column_width(1, 30).expect("msg");
     worksheet.set_column_width(2, 30).expect("msg");
@@ -121,8 +110,6 @@ pub fn create_excel(app: tauri::AppHandle, data: String) -> Result<(), String>{
     worksheet.write(0, 2, "ФИО").expect("msg");
     worksheet.write(0, 3, "Количество баллов").expect("msg");
     worksheet.write(0, 4, "Уровень (1-5)").expect("msg");
-    // Write a string without formatting.
-    
 
     let mut idx = 0;
     for i in d {
@@ -153,41 +140,14 @@ pub fn create_excel(app: tauri::AppHandle, data: String) -> Result<(), String>{
             
             idx+=1;
         }
-        // idx+=1;
     }
-    
-    
 
-    // // Write a string with the bold format defined above.
-    // worksheet.write_with_format(1, 0, "World", &bold_format).expect("msg");
-
-    // // Write some numbers.
-    // worksheet.write(2, 0, 1).expect("msg");
-    // worksheet.write(3, 0, 2.34).expect("msg");
-
-    // // Write a number with formatting.
-    // worksheet.write_with_format(4, 0, 3.00, &decimal_format).expect("msg");
-
-    // // Write a formula.
-    // worksheet.write(5, 0, Formula::new("=SIN(PI()/4)")).expect("msg");
-
-    // // Write a date.
-    // let date = ExcelDateTime::from_ymd(2023, 1, 25).expect("msg");
-    // worksheet.write_with_format(6, 0, &date, &date_format).expect("msg");
-
-    // // Write some links.
-    // worksheet.write(7, 0, Url::new("https://www.rust-lang.org")).expect("msg");
-    // worksheet.write(8, 0, Url::new("https://www.rust-lang.org").set_text("Rust")).expect("msg");
-
-    // // Write some merged cells.
-    // worksheet.merge_range(9, 0, 9, 1, "Merged cells", &merge_format).expect("msg");
-
-    let filename = "usersdemo.xlsx";
+    let filename = "Динамика.xlsx";
     let resource_path = app
         .path()
         .resolve(filename, BaseDirectory::Desktop)
         .unwrap();
-    // Save the file to disk.
+
     match workbook.save(&resource_path) {
         Ok(_) => (),
         Err(_) => ()
@@ -195,4 +155,79 @@ pub fn create_excel(app: tauri::AppHandle, data: String) -> Result<(), String>{
     ;
 
     Ok(())
+}
+
+
+#[derive(Debug, Deserialize)]
+struct OBJECT {
+    correct: bool,
+    img: String
+}
+
+#[derive(Debug, Deserialize)]
+struct GAME {
+    name: String,
+    objects: Vec<OBJECT>
+}
+
+
+#[tauri::command]
+pub fn get_games(handle: tauri::AppHandle) -> String {
+    let resource_path = handle
+        .path()
+        .resolve("games/games.json", BaseDirectory::Resource)
+        .unwrap();
+
+    let mut file = std::fs::File::open(&resource_path).unwrap();
+    let mut buffer = String::new();
+    match file.read_to_string(&mut buffer) {
+        Ok(_) => {
+            drop(file);
+            buffer
+        }
+        Err(_) => "".to_string(),
+    }
+}
+
+
+#[tauri::command]
+pub fn set_game(handle: tauri::AppHandle, request: tauri::ipc::Request) {
+    // let d: Value = serde_json::from_str(&game.as_str()).unwrap();
+    // let d: GAME = serde_json::from_value(d).unwrap();
+
+    
+    let tauri::ipc::InvokeBody::Json(d) = request.body().to_owned() else {
+        return ();
+    };
+
+    // let d = serde_json::from_value(d).unwrap();
+
+    // println!("{:?}", d);
+    
+    // d.objects.iter().all(|x| {
+    //     let resource_path = &x.img;
+    //     let v: Vec<&str> = resource_path.split('\\').collect();
+    //     match v.last() {
+    //         Some(last) => {
+    //             let composite_dist = format!("games/{}/{}", d.name, last).to_string();
+    //             let resource_dest_path = handle
+    //                 .path()
+    //                 .resolve(&composite_dist, BaseDirectory::Resource).unwrap();
+    //             std::fs::copy(&resource_path, &resource_dest_path).unwrap();
+    //         },
+    //         None => ()
+    //     }
+        
+    //     false
+    // });
+    // let _ = std::fs::remove_file(&resource_path);
+    // match std::fs::OpenOptions::new().write(true).create(true).open(&resource_path) {
+    //     Ok(mut file) => {
+    //         match file.write_all(games.as_bytes()) {
+    //             Ok(_) => String::new(),
+    //             Err(e) => e.to_string(),
+    //         }
+    //     },
+    //     Err(e) => e.to_string()
+    // }
 }

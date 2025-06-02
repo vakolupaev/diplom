@@ -1,9 +1,16 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Header from "../components/header.component";
 import { PageContext } from "../providers";
+import { setGame } from "../features/games";
 
 function GameCreationPage() {
     const {setPage} = useContext(PageContext);
+    const [file, setFile] = useState<any>(null);
+
+    const CreateHandler = () => {
+        console.log(file)
+        setGame(file);
+    }
 
     return (
         <>
@@ -36,8 +43,13 @@ function GameCreationPage() {
                             }}
                         >
                             <input
-                                type="text" 
+                                type="file" 
                                 placeholder="Путь до файла" 
+                                onChange={(e: any) => {
+                                    if (!!e.target.files[0]) {
+                                        setFile(e.target.files[0]);
+                                    }
+                                }}
                                 style={{
                                     padding: "20px",
                                     border: "none", 
@@ -295,7 +307,10 @@ function GameCreationPage() {
                         style={{
                             width: "300px",
                         }}
-                        onClick={() => {setPage("main")}}
+                        onClick={() => {
+                            CreateHandler(); 
+                            setPage("main");
+                        }}
                     >
                         Сохранить
                     </button>

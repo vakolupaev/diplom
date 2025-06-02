@@ -18,3 +18,12 @@ export function setGamePicture(users: any) {
 export function getPath() {
     return invoke('get_path');
 }
+
+export async function getGames(): Promise<any> {
+    let data: any = await invoke('get_games');
+    return JSON.parse(data).sort((a: any, b: any) => a.name.localeCompare(b.name));
+}
+
+export function setGame(game: any) {
+    return invoke('set_game', game);
+}

@@ -10,6 +10,10 @@ export const UserContext = createContext<any>({user: ""});
 export const GameContext = createContext<any>({game: ""});
 export const TestContext = createContext<any>({questions: testData});
 export const ErrContext = createContext<any>({err: ""})
+export const GameStageContext = createContext<any>({
+    games_pull: [],
+    stage: 0
+})
 
 function Providers() {
     const [page, setPage] = useState("main");
@@ -19,6 +23,10 @@ function Providers() {
     const [game, setGame] = useState("");
     const [testUser, setTestUser] = useState("");
     const [err, setErr] = useState("")
+    const [gameStage, setGameStage] = useState({
+        games_pull: [],
+        stage: 0
+    })
 
     const getData = async () => {
         let usrs = await getUsers();
@@ -30,22 +38,25 @@ function Providers() {
     }, [])
 
     return (
-        <ErrContext.Provider value={{err, setErr}}>
-            <PageContext.Provider value={{page, setPage}}>
-                <UsersListContext.Provider value={{usersList, setUsersList}}>
-                    <TestUserContext.Provider value={{testUser, setTestUser}}>
-                        <UserContext.Provider value={{user, setUser}}>
-                            <TestContext.Provider value={{questions, setQuestions}}>
-                                <GameContext.Provider value={{game, setGame}}>
-                                    {/* <ErrComponent /> */}
-                                    <Router />
-                                </GameContext.Provider>
-                            </TestContext.Provider>
-                        </UserContext.Provider> 
-                    </TestUserContext.Provider>
-                </UsersListContext.Provider>
-            </PageContext.Provider>
-        </ErrContext.Provider>
+        <GameStageContext.Provider value={{gameStage, setGameStage}}>
+            <ErrContext.Provider value={{err, setErr}}>
+                <PageContext.Provider value={{page, setPage}}>
+                    <UsersListContext.Provider value={{usersList, setUsersList}}>
+                        <TestUserContext.Provider value={{testUser, setTestUser}}>
+                            <UserContext.Provider value={{user, setUser}}>
+                                <TestContext.Provider value={{questions, setQuestions}}>
+                                    <GameContext.Provider value={{game, setGame}}>
+                                        {/* <ErrComponent /> */}
+                                        <Router />
+                                    </GameContext.Provider>
+                                </TestContext.Provider>
+                            </UserContext.Provider> 
+                        </TestUserContext.Provider>
+                    </UsersListContext.Provider>
+                </PageContext.Provider>
+            </ErrContext.Provider>
+        </GameStageContext.Provider>
+        
     )
 }
 

@@ -26,6 +26,7 @@ function GamesPage() {
     const [objectList, setObjectList] = useState<any>([]);
     const [timeo, setTimeo] = useState(false);
     const [next, setNext] = useState(false);
+    
 
     const [pictureSet, setPicSet] = useState({
         background: "",
