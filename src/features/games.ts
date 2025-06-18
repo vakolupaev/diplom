@@ -27,3 +27,15 @@ export async function getGames(): Promise<any> {
 export function setGame(game: any) {
     return invoke('set_game', game);
 }
+
+export function getSrcPath(): Promise<String> {
+    return invoke('get_src_path')
+}
+
+export function editGame(games: any) {
+    invoke('edit_games', {games: JSON.stringify(games)});
+}
+
+export function deleteGameFolder(game: string) {
+    invoke('delete_game_folder', {game: game});
+}

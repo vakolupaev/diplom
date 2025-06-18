@@ -3,9 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import * as motion from "motion/react-client";
 import galochka from "../assets/galochka.png";
 import krest from "../assets/krest.png";
-import games from "../games.json";
 import { PageContext } from "../providers";
-import { getGamePicture } from "../features/games";
+import { getGamePicture, getGames } from "../features/games";
 
 function shuffle(array: any) {
   let currentIndex = array.length;
@@ -26,32 +25,46 @@ function GamesPage() {
     const [objectList, setObjectList] = useState<any>([]);
     const [timeo, setTimeo] = useState(false);
     const [next, setNext] = useState(false);
+    const [setGameList] = useState<any>([]);
+    const [stage, setStage] = useState<number>(0);
+    const [queue, setQueue] = useState<any>([]);
     
+    const getG = async () => {
+        let games = await getGames();
+        setQueue(shuffle(games)); 
+        
+        setGameList(games.filter((gme: any) => gme.name.toLocaleLowerCase().includes(gme.name.toLowerCase())));
+    }
+
+    useEffect(() => {
+        getG();
+    }, [])
+
 
     const [pictureSet, setPicSet] = useState({
         background: "",
+        actor: "",
         images: []
     })
 
     const getPics = async () => {
-        let arr = shuffle(games[0].objects);
+        let arr = shuffle(queue[stage].objects);
         setObjectList(arr);
-        let imgs =  arr.map((obj: any) => {
-            return obj.img
-        })
-        let background = await getGamePicture(`games\\${games[0].name}\\фон.jpg`);
+        let background = await getGamePicture(queue[stage].bg);
+        let actor = await getGamePicture(queue[stage].actor);
 
         let rarr: any = await Promise.all([
-            getGamePicture(`games\\${games[0].name}\\${imgs[0]}`),
-            getGamePicture(`games\\${games[0].name}\\${imgs[1]}`),
-            getGamePicture(`games\\${games[0].name}\\${imgs[2]}`),
-            getGamePicture(`games\\${games[0].name}\\${imgs[3]}`),
-            getGamePicture(`games\\${games[0].name}\\${imgs[4]}`),
-            getGamePicture(`games\\${games[0].name}\\${imgs[5]}`)
+            getGamePicture(queue[stage].objects[0].img),
+            getGamePicture(queue[stage].objects[1].img),
+            getGamePicture(queue[stage].objects[2].img),
+            getGamePicture(queue[stage].objects[3].img),
+            getGamePicture(queue[stage].objects[4].img),
+            getGamePicture(queue[stage].objects[5].img),
         ])
 
         setPicSet({
             background: background,
+            actor: actor,
             images: rarr
         })
         
@@ -60,7 +73,7 @@ function GamesPage() {
     useEffect(() => {
         
         getPics()
-    }, [])
+    }, [queue, stage])
 
     useEffect(() => {
         let d = objectList.filter((object: any) => {
@@ -104,6 +117,15 @@ function GamesPage() {
         }
     };
 
+    const handleNextClick = () => {
+        if (queue.length -1 == stage || stage == 4) {
+            setPage("home")
+        }
+        setStage(prev => prev + 1)
+        setNext(false)
+        
+    }
+
     return <>
         <main
             style={{
@@ -115,6 +137,7 @@ function GamesPage() {
                 overflow: "hidden"
             }}
         >
+            <img src={pictureSet.actor} style={{position: "absolute", height: "200px", zIndex: 100, top: "57%", left: "15%"}} alt="" />
             <img src={pictureSet.background} style={{position: "absolute", width: "100vw", height: "100vh", zIndex: 1}} alt="" />
             {
                 next && 
@@ -129,7 +152,7 @@ function GamesPage() {
                         zIndex: 10000,
                         cursor: "pointer"
                     }}
-                    onClick={() => {setPage("home")}}
+                    onClick={handleNextClick}
                 >
                     Дальше
                 </button>

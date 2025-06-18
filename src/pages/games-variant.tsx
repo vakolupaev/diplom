@@ -1,30 +1,58 @@
 import { useContext, useEffect, useState } from "react";
 import Header from "../components/header.component";
-import games from "../games.json";
-import { GameContext, PageContext } from "../providers";
+import { CreateGameContext, GameContext, PageContext } from "../providers";
+import { deleteGameFolder, editGame, getGames } from "../features/games";
 
 function GamesVariantPage() {
     const {game, setGame} = useContext(GameContext);
-    const [gameList, setGameList] = useState(games);
+    const [gameList, setGameList] = useState([]);
     const [change, setChange] = useState(false);
     const [create, setCreate] = useState(false);
-    const [createUser, setCreateUser] = useState("");
+    const [createG, setCreateG] = useState("");
     const {setPage} = useContext(PageContext);
+    const {setCreateGame} = useContext(CreateGameContext);
 
-    useEffect(() => {
-        setGameList(games.filter((gme) => gme.name.toLocaleLowerCase().includes(gme.name.toLowerCase())));
-    }, [])
-
-    function InputHandler(e: any) {
-        const inp = e.target.value.toLowerCase();
-        setGame(e.target.value);
-        setGameList(games.filter((usr) => usr.name.toLocaleLowerCase().includes(inp)));
+    const getG = async () => {
+        let games = await getGames();
+        setGameList(games.filter((gme: any) => gme.name.toLocaleLowerCase().includes(gme.name.toLowerCase())));
     }
 
-    function SelectUserHandler(index: number) {
-        let d = gameList.map((user) => {
+    const DeleteGameHandler = () => {
+        let deletegame: any = gameList.find((game: any) => game.selected == true);
+        let d = gameList.filter((game: any) => game.selected == false);
+        let m = d.map((obj: any) => {
             return {
-                ...user,
+                name: obj.name,
+                actor: obj.actor,
+                bg: obj.bg,
+                objects: obj.objects
+            }
+        })
+
+        editGame(m)
+        deleteGameFolder(deletegame.name)
+        getG()
+    }
+
+    useEffect(() => {
+        getG()
+    }, [])
+
+    let get = async (inp: string) => {
+        let games = await getGames();
+        setGameList(games.filter((usr: any) => usr.name.toLocaleLowerCase().includes(inp)));
+    }
+
+    function InputHandler(e: any) {
+        const inp: string = e.target.value.toLowerCase();
+        setGame(e.target.value);
+        get(inp)
+    }
+
+    function SelectGameHandler(index: number) {
+        let d: any = gameList.map((game: any) => {
+            return {
+                ...game,
                 selected: false
             }
         });
@@ -98,7 +126,7 @@ function GamesVariantPage() {
                                         cursor: "pointer",
                                     }}
 
-                                    onClick={() => SelectUserHandler(index)}
+                                    onClick={() => SelectGameHandler(index)}
                                 >
                                     {game.name}
                                 </div>
@@ -126,7 +154,7 @@ function GamesVariantPage() {
                             width: "200px"
                         }}
 
-                        onClick={() => {setCreate(!create); setCreateUser(""); setChange(false)}}
+                        onClick={() => {setCreate(!create); setCreateG(""); setChange(false)}}
                     >
                         Добавить
                     </button>
@@ -138,17 +166,9 @@ function GamesVariantPage() {
                             boxShadow: "0px 2px 10px -5px #00000090",
                             width: "200px"
                         }}
-                        onClick={() => {setChange(!change); setCreateUser(""); setCreate(false)}}
-                    >
-                        Изменить
-                    </button>
-                    <button
-                        style={{
-                            padding: "20px",
-                            backgroundColor: "#ffffff",
-                            borderRadius: "12px",
-                            boxShadow: "0px 2px 10px -5px #00000090",
-                            width: "200px"
+
+                        onClick={() => {
+                            DeleteGameHandler();
                         }}
                     >
                         Удалить
@@ -168,7 +188,7 @@ function GamesVariantPage() {
                             <input
                                 autoFocus
                                 type="text"
-                                value={createUser}
+                                value={createG}
                                 style={{
                                     width: "400px",
                                     padding: "20px",
@@ -180,42 +200,13 @@ function GamesVariantPage() {
                                     boxShadow: "0px 2px 10px -5px #00000090",
                                     zIndex: 10
                                 }}
-                                onChange={(e) => {setCreateUser(e.target.value)}}
+                                onChange={(e) => {setCreateG(e.target.value)}}
                             />
                             <button
                                 className="enter-button"
-                                onClick={() => {setCreate(false); setPage("gamecreation")}}
+                                onClick={() => {setCreate(false); setCreateGame((prev: any) => {return {...prev, name: createG}}); setPage("gamecreation")}}
                             >
                                 Добавить
-                            </button>
-                        </>
-                    }
-                    {
-                        change && !create
-                        &&
-                        <>
-                            <input
-                                autoFocus
-                                type="text"
-                                value={game}
-                                style={{
-                                    width: "400px",
-                                    padding: "20px",
-                                    borderRadius: "12px",
-                                    outline: "none",
-                                    height: "60px",
-                                    boxSizing:"border-box",
-                                    border: "none",
-                                    boxShadow: "0px 2px 10px -5px #00000090",
-                                    zIndex: 10
-                                }}
-                                onChange={(e) => {setGame(e.target.value)}}
-                            />
-                            <button
-                                className="enter-button"
-                                onClick={() => {setChange(false)}}
-                            >
-                                Сохранить
                             </button>
                         </>
                     }
