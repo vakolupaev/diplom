@@ -137,7 +137,7 @@ function GamesPage() {
                 overflow: "hidden"
             }}
         >
-            <img src={pictureSet.actor} style={{position: "absolute", height: "200px", zIndex: 100, top: "57%", left: "15%"}} alt="" />
+            <img src={pictureSet.actor} style={{position: "absolute", height: "50%", zIndex: 100, bottom: "5%", left: "5%"}} alt="" />
             <img src={pictureSet.background} style={{position: "absolute", width: "100vw", height: "100vh", zIndex: 1}} alt="" />
             {
                 next && 
@@ -169,7 +169,9 @@ function GamesPage() {
             >
                 <div
                     style={{
-                        left: "100px",
+                        position: "absolute",
+                        right: "25%",
+                        bottom: "10%",
                         display: "grid",
                         gridTemplateColumns: "200px 200px",
                         gridGap: "50px",
@@ -202,23 +204,23 @@ function GamesPage() {
                                                 repeatDelay: 0,
                                             }}
                                             style={{
-                                                width: 200,
-                                                height: 200,
+                                                width: 150,
+                                                height: 150,
                                                 backgroundColor: "none",
                                                 position: "absolute"
                                             }}
                                         >
-                                            <img src={object.correct ? galochka : krest} alt="" style={{width: "200px", height: "200px", objectFit: "contain"}}/>
+                                            <img src={object.correct ? galochka : krest} alt="" style={{width: "150px", height: "150px", objectFit: "contain"}}/>
                                         </motion.div>
                                     }
                                     
                                     <style>
                                         {`
                                             .ball {
-                                                width: 200px;
-                                                height: 200px;
+                                                width: 150px;
+                                                height: 150px;
                                                 background-color: #8df0cc;
-                                                border-radius: 200px;
+                                                border-radius: 150px;
                                                 transition: all ${spring(0.5, 0.8)};
                                                 transform: scale(-100%);
                                                 opacity: 0;
